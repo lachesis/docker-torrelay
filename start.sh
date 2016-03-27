@@ -19,36 +19,51 @@ function update_or_add {
 
 # Default communcation port
 update_or_add 'ORPort' '9001'
+update_or_add 'DirPort' '9030'
 
 # Disable Socks connections
 update_or_add  'SocksPort' '0'
 
 # Reject all exits. Only relay.
-update_or_add 'Exitpolicy' 'reject *:*'
+update_or_add 'ExitPolicy' 'reject *:*'
 
-# Set $NICKNAME to the node nickname
-if [ -n "$NICKNAME" ]; then
-  update_or_add 'Nickname' "$NICKNAME"
+# Set $Nickname to the node nickname
+if [ -n "$Nickname" ]; then
+  update_or_add 'Nickname' "$Nickname"
 else
-  update_or_add 'Nickname' 'DockerTorrelay'
+  update_or_add 'Nickname' 'DockerTorRelay'
 fi
 
-# Set $CONTACTINFO to your contact info
-if [ -n "$CONTACTINFO" ]; then
-  update_or_add 'ContactInfo' "$CONTACTINFO"
+# Set $ContactInfo to your contact info
+if [ -n "$ContactInfo" ]; then
+  update_or_add 'ContactInfo' "$ContactInfo"
 else
   update_or_add 'ContactInfo' 'Anonymous'
 fi
 
-# Start the count on the first after midnight
-update_or_add 'AccountingStart' 'month 1 00:01'
-
 ## Set monthly bandwidth limit.
-# 750 Gigabytes per month (each way) is the default
-if [ -n "$ACCOUNTINGMAX" ]; then
-  update_or_add 'AccountingMax' "$ACCOUNTINGMAX"
-else
-  update_or_add 'AccountingMax' '750 GBytes'
+if [ -n "$AccountingMax" ]; then
+  # Start the count on the first after midnight
+  update_or_add 'AccountingStart' 'month 1 00:01'
+  update_or_add 'AccountingMax' "$AccountingMax"
+fi
+
+# Set bandwidth limit and burst
+if [ -n "$RelayBandwidthRate" ]; then
+  update_or_add 'RelayBandwidthRate' "$RelayBandwidthRate"
+fi
+if [ -n "$RelayBandwidthBurst" ]; then
+  update_or_add 'RelayBandwidthBurst' "$RelayBandwidthBurst"
+fi
+
+# Set Family if specified
+if [ -n "$MyFamily" ]; then
+  update_or_add 'MyFamily' "$MyFamily"
+fi
+
+# Set Address if specified
+if [ -n "$Address" ]; then
+  update_or_add 'Address' "$Address"
 fi
 
 # Start Tor
